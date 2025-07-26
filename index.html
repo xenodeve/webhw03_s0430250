@@ -127,16 +127,21 @@
 
   <!-- Script -->
   <script>
+    // Reset Animation icon น Toast
     function resetAnimation(el) {
       el.style.animation = 'none';
       el.offsetHeight;
       el.style.animation = null;
     }
 
+    const sucess = "#007bff";
+    const error = "#dc3545";
+
+    // เพิ่มรายการใหม่ในลิสต์
     function addTodo() {
       const input = document.getElementById('todoInput');
       const value = input.value.trim();
-      if (!value) return showToast("Please enter a todo!", "#dc3545", false);
+      if (!value) return showToast("Please enter a todo!", sucess, false);
 
       const div = document.createElement('div');
       div.className = 'bg-gray-100 py-2 px-4 rounded shadow text-center font-medium text-gray-700 hover:shadow-[0_0_10px_rgba(0,0,0,0.15)] transform hover:scale-105 transition-all duration-300';
@@ -145,19 +150,21 @@
       document.getElementById('todoList').appendChild(div);
       input.value = '';
 
-      showToast("Todo added!", "#007bff", true);
+      showToast("Todo added!", sucess, true);
     }
 
+    // ลบรายการทั้งหมดในลิสต์
     function removeAllTodos() {
       const list = document.getElementById('todoList');
       if (list.children.length === 0) {
-        return showToast("No todos to remove!", "#dc3545", false);
+        return showToast("No todos to remove!", error, false);
       } else {
         list.innerHTML = '';
-        return showToast("All todos removed!", "#dc3545", true);
+        return showToast("All todos removed!", error, true);
       }
     }
 
+    // แสดง Toast
     function showToast(message, bgColor = "#272727", isSuccess = true) {
       const toast = document.getElementById("toast");
       const toastMessage = document.getElementById("toastMessage");
@@ -189,6 +196,7 @@
       }, 2500);
     }
 
+    // เพิ่ม Effect Typing Placeholder
     function PlaceholderTypewriter(inputElement, textArray, period = 2000) {
       let txt = '', loopNum = 0, isDeleting = false, showCursor = true;
 
@@ -219,6 +227,7 @@
       tick();
     }
 
+    // เรียกใช้ PlaceholderTypewriter เมื่อโหลดหน้าเว็บ
     window.onload = function () {
       const input = document.getElementById('todoInput');
       const messages = [
