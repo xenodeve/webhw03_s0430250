@@ -1,0 +1,240 @@
+<!-- รองรับ Responsive Design เต็มรูปแบบ -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HW3</title>
+  <link rel="icon" href="https://lh3.google.com/u/5/d/1uog4WMvNjGTZxw6IxD9lH5DdkRmR5jwH=w1920-h945-iv1?auditContext=forDisplay" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css?family=Anonymous+Pro');
+
+    body {
+      font-family: 'Anonymous Pro', monospace;
+    }
+
+    #toast {
+      opacity: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    #toast.opacity-100 {
+      opacity: 1;
+    }
+
+    .icon {
+      width: 24px;
+      height: 24px;
+      stroke-width: 3;
+      stroke-miterlimit: 10;
+      stroke: white;
+      fill: none;
+      animation: dash 0.6s ease forwards;
+      flex-shrink: 0;
+    }
+
+    .checkmark {
+      animation: stroke 0.5s ease forwards;
+    }
+
+    .checkmark__circle {
+      stroke-dasharray: 166;
+      stroke-dashoffset: 166;
+      animation: dash 0.6s ease forwards;
+    }
+
+    .checkmark__check {
+      stroke-dasharray: 48;
+      stroke-dashoffset: 48;
+      animation: dash 0.3s 0.6s ease forwards;
+    }
+
+    .cross__line1,
+    .cross__line2 {
+      stroke-dasharray: 40;
+      stroke-dashoffset: 40;
+      animation: dash 0.4s ease forwards;
+      stroke-linecap: round;
+    }
+
+    .cross__line2 {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes dash {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+
+    @keyframes stroke {
+      100% {
+        stroke-width: 3;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-[#121212] min-h-screen flex items-center justify-center px-4">
+
+  <div class="bg-white p-6 sm:p-8 rounded-lg shadow-[0_0_40px_rgba(231,231,231,0.2)] w-full max-w-md text-center hover:shadow-[0_0_60px_rgba(231,231,231,0.2)] transition-shadow duration-500">
+
+    <h1 class="text-3xl font-semibold mb-6 text-gray-800">Todo List</h1>
+
+    <!-- Input -->
+    <div class="flex flex-col sm:flex-row gap-2 mb-4 w-full">
+      <input type="text"
+        class="flex-grow border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-auto"
+        id="todoInput" />
+    </div>
+
+    <!-- Buttons -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+      <button onclick="removeAllTodos()"
+        class="bg-red-400 hover:bg-red-500 transition-colors duration-500 text-white font-medium py-2 px-4 rounded w-full hover:shadow-[0_0_10px_rgba(228,0,0,0.829)] transform hover:scale-105">
+        Remove All Todos
+      </button>
+      <button onclick="addTodo()"
+        class="bg-blue-500 hover:bg-blue-600 transition-colors duration-500 text-white font-medium py-2 px-4 rounded w-full hover:shadow-[0_0_10px_rgba(0,137,228,0.829)] transform hover:scale-105">
+        Add Todo
+      </button>
+    </div>
+
+    <!-- Todo List -->
+    <div id="todoList" class="space-y-3 text-gray-700">
+      <div class="bg-gray-100 py-2 px-4 rounded shadow text-center font-medium hover:shadow-[0_0_10px_rgba(0,0,0,0.15)] transform hover:scale-105 transition-all duration-300">Homework</div>
+      <div class="bg-gray-100 py-2 px-4 rounded shadow text-center font-medium hover:shadow-[0_0_10px_rgba(0,0,0,0.15)] transform hover:scale-105 transition-all duration-300">Bicycle-Riding</div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast"
+    class="hidden fixed top-5 left-1/2 transform -translate-x-1/2 bg-[#272727] text-white px-6 py-3 rounded shadow-lg z-50 text-sm transition-all duration-500 ease-in-out">
+    <svg id="checkmarkIcon" class="icon checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+      <circle class="checkmark__circle" cx="26" cy="26" r="25" />
+      <path class="checkmark__check" d="M14 27l7 7 16-16" />
+    </svg>
+    <svg id="crossIcon" class="icon cross" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" style="display:none;">
+      <line class="cross__line1" x1="16" y1="16" x2="36" y2="36" stroke="white" />
+      <line class="cross__line2" x1="36" y1="16" x2="16" y2="36" stroke="white" />
+    </svg>
+    <span id="toastMessage"></span>
+  </div>
+
+  <!-- Script -->
+  <script>
+    function resetAnimation(el) {
+      el.style.animation = 'none';
+      el.offsetHeight;
+      el.style.animation = null;
+    }
+
+    function addTodo() {
+      const input = document.getElementById('todoInput');
+      const value = input.value.trim();
+      if (!value) return showToast("Please enter a todo!", "#dc3545", false);
+
+      const div = document.createElement('div');
+      div.className = 'bg-gray-100 py-2 px-4 rounded shadow text-center font-medium text-gray-700 hover:shadow-[0_0_10px_rgba(0,0,0,0.15)] transform hover:scale-105 transition-all duration-300';
+      div.innerText = value;
+
+      document.getElementById('todoList').appendChild(div);
+      input.value = '';
+
+      showToast("Todo added!", "#007bff", true);
+    }
+
+    function removeAllTodos() {
+      const list = document.getElementById('todoList');
+      if (list.children.length === 0) {
+        return showToast("No todos to remove!", "#dc3545", false);
+      } else {
+        list.innerHTML = '';
+        return showToast("All todos removed!", "#dc3545", true);
+      }
+    }
+
+    function showToast(message, bgColor = "#272727", isSuccess = true) {
+      const toast = document.getElementById("toast");
+      const toastMessage = document.getElementById("toastMessage");
+      const checkmarkIcon = document.getElementById("checkmarkIcon");
+      const crossIcon = document.getElementById("crossIcon");
+
+      toastMessage.textContent = message;
+      toast.style.backgroundColor = bgColor;
+
+      if (isSuccess) {
+        crossIcon.style.display = "none";
+        checkmarkIcon.style.display = "inline-block";
+        const checkPaths = checkmarkIcon.querySelectorAll('circle, path');
+        checkPaths.forEach(el => resetAnimation(el));
+      } else {
+        checkmarkIcon.style.display = "none";
+        crossIcon.style.display = "inline-block";
+        const crossLines = crossIcon.querySelectorAll('line');
+        crossLines.forEach(el => resetAnimation(el));
+      }
+
+      toast.classList.remove("hidden");
+      toast.classList.add("opacity-100");
+
+      setTimeout(() => toast.classList.add("opacity-0"), 2000);
+      setTimeout(() => {
+        toast.classList.add("hidden");
+        toast.classList.remove("opacity-0", "opacity-100");
+      }, 2500);
+    }
+
+    function PlaceholderTypewriter(inputElement, textArray, period = 2000) {
+      let txt = '', loopNum = 0, isDeleting = false, showCursor = true;
+
+      function tick() {
+        const i = loopNum % textArray.length;
+        const fullTxt = textArray[i];
+
+        txt = isDeleting ? fullTxt.substring(0, txt.length - 1) : fullTxt.substring(0, txt.length + 1);
+        const cursor = showCursor ? '|' : ' ';
+        inputElement.placeholder = txt + cursor;
+        showCursor = !showCursor;
+
+        let delta = 150 - Math.random() * 50;
+        if (isDeleting) delta /= 2;
+
+        if (!isDeleting && txt === fullTxt) {
+          delta = period;
+          isDeleting = true;
+        } else if (isDeleting && txt === '') {
+          isDeleting = false;
+          loopNum++;
+          delta = 500;
+        }
+
+        setTimeout(tick, delta);
+      }
+
+      tick();
+    }
+
+    window.onload = function () {
+      const input = document.getElementById('todoInput');
+      const messages = [
+        "Schedule a meeting with an old friend.",
+        "Do homework?",
+        "Bicycle-Riding.",
+        "Learn a new skill.",
+        "Write in a journal.",
+        "Reflect on the day.",
+        "Read a book.",
+        "Sleep at least 7–8 hours per night.",
+        "Go to the gym.",
+      ];
+      PlaceholderTypewriter(input, messages, 2000);
+    };
+  </script>
+</body>
+
+</html>
